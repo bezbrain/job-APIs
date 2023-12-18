@@ -1,6 +1,7 @@
 const express = require("express");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandleMiddleware = require("./middleware/error-handler");
+const connectDB = require("./db/connect");
 const app = express();
 
 require("dotenv").config();
@@ -20,4 +21,12 @@ app.use(notFoundMiddleware);
 // Error-handle middleware
 app.use(errorHandleMiddleware);
 
-app.listen(port, console.log(`Server is listening on port ${port}`));
+const startDB = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI);
+    app.listen(port, console.log(`Server is listening on port ${port}`));
+  } catch (error) {
+    console.log(error);
+  }
+};
+startDB();
