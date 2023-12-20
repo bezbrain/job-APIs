@@ -2,9 +2,12 @@ const express = require("express");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandleMiddleware = require("./middleware/error-handler");
 const connectDB = require("./db/connect");
+const authRouter = require("./routes/auth.route");
+const jobRouter = require("./routes/jobs.routes");
 const app = express();
 
 require("dotenv").config();
+app.use(express.json());
 
 // The dynamic port
 const port = process.env.PORT || 3000;
@@ -14,7 +17,8 @@ app.get("/", (req, res) => {
   res.send("This is the home page");
 });
 // General route
-// app.use("/api/v1");
+app.use("/api/v1", authRouter);
+app.use("/api/v1", jobRouter);
 
 // Not-found middleware
 app.use(notFoundMiddleware);
