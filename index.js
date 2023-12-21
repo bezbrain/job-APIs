@@ -1,12 +1,15 @@
 const express = require("express");
+require("express-async-errors");
+require("dotenv").config();
+
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandleMiddleware = require("./middleware/error-handler");
 const connectDB = require("./db/connect");
 const authRouter = require("./routes/auth.route");
 const jobRouter = require("./routes/jobs.routes");
+
 const app = express();
 
-require("dotenv").config();
 app.use(express.json());
 
 // The dynamic port
