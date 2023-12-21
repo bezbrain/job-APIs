@@ -17,8 +17,8 @@ app.get("/", (req, res) => {
   res.send("This is the home page");
 });
 // General route
-app.use("/api/v1", authRouter);
-app.use("/api/v1", jobRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/jobs", jobRouter);
 
 // Not-found middleware
 app.use(notFoundMiddleware);
