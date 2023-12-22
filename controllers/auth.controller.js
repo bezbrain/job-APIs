@@ -41,9 +41,14 @@ const login = async (req, res) => {
     throw new UnauthenticatedError("Email does not exist");
   }
 
+  const isPasswordCorrect = await user.comparePassword(password);
   // Compare password
+  if (!isPasswordCorrect) {
+    throw new UnauthenticatedError("Password does not match");
+  }
 
   const token = user.createJWT();
+
   res.status(StatusCodes.OK).json({
     success: true,
     user: { name: user.name },
