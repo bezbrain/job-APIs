@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next(); // In the mongoose docs, it is not compulsory you use this "next" keyword. Without it, it would still work
+  next(); // According to the mongoose docs, it is not compulsory you use this "next" keyword. Without it, it would still work
 });
 
 // USING MONGOOSE TO HANDLE JWT SIGNING
@@ -46,6 +46,12 @@ UserSchema.methods.createJWT = function () {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
+};
+
+// USE MONGOOSE TO HANDLE COMPARING OF PASSWORD
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
 };
 
 module.exports = mongoose.model("Users", UserSchema);

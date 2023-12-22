@@ -1,6 +1,7 @@
 const UserCollection = require("../models/Users");
 const { StatusCodes } = require("http-status-codes");
 const BadRequestError = require("../errors/bad-request");
+const UnauthenticatedError = require("../errors/unauthenticated");
 // const bcrypt = require("bcryptjs");
 
 const register = async (req, res) => {
@@ -30,9 +31,25 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || password) {
+  if (!email || !password) {
     throw new BadRequestError("Please provide email and password");
   }
+
+  const user = await UserCollection.findOne({ email });
+
+  if (!user) {
+    throw new UnauthenticatedError("Email does not exist");
+  }
+
+  // Compare password
+
+  const token = user.createJWT();
+  res.status(StatusCodes.OK).json({
+    success: true,
+    user: { name: user.name },
+    token,
+    message: "Login successful",
+  });
 };
 
 module.exports = {
