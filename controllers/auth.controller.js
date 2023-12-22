@@ -1,5 +1,6 @@
 const UserCollection = require("../models/Users");
 const { StatusCodes } = require("http-status-codes");
+const BadRequestError = require("../errors/bad-request");
 // const bcrypt = require("bcryptjs");
 
 const register = async (req, res) => {
@@ -27,7 +28,11 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  res.send("Login a user");
+  const { email, password } = req.body;
+
+  if (!email || password) {
+    throw new BadRequestError("Please provide email and password");
+  }
 };
 
 module.exports = {
