@@ -8,10 +8,11 @@ const {
   updateJob,
   deleteJob,
 } = require("../controllers/jobs.controller");
+const authMiddleware = require("../middleware/auth");
 
-router.post("/", createJob);
-router.get("/", getAllJobs);
+router.get("/", authMiddleware, getAllJobs);
 router.get("/:jobID", getSingleJob);
+router.post("/", createJob);
 router.patch("/:jobID", updateJob);
 router.delete("/:jobID", deleteJob);
 
