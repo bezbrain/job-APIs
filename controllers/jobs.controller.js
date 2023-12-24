@@ -1,3 +1,5 @@
+const JobCollection = require("../models/Job");
+
 const getAllJobs = async (req, res) => {
   res.send("All Jobs");
 };
