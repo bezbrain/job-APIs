@@ -55,12 +55,17 @@ const updateJob = async (req, res) => {
   const {
     params: { jobID },
     user: { userId },
-    body,
+    body: { company, position },
   } = req;
+
+  if (!company || !position) {
+    throw new BadRequestError("Company or Position field cannot be empty");
+  }
+
   const job = await JobCollection.findOneAndUpdate(
     { _id: jobID, createdBy: userId },
-    body,
-    { new: true }
+    req.body,
+    { new: true, runValidators: true }
   );
 
   if (!job) {
