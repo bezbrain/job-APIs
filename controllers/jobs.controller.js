@@ -3,9 +3,10 @@ const { StatusCodes } = require("http-status-codes");
 const BadRequestError = require("../errors/bad-request");
 const NotFoundError = require("../errors/not-found");
 
+// Get All Jobs
 const getAllJobs = async (req, res) => {
   const jobs = await JobCollection.find({ createdBy: req.user.userId }).sort(
-    "createdAt"
+    "-createdAt"
   );
 
   res.status(StatusCodes.OK).json({
@@ -16,6 +17,7 @@ const getAllJobs = async (req, res) => {
   });
 };
 
+// Get Single Job
 const getSingleJob = async (req, res) => {
   const {
     user: { userId },
@@ -34,6 +36,7 @@ const getSingleJob = async (req, res) => {
   });
 };
 
+// Create Job
 const createJob = async (req, res) => {
   // Create a new property key on req.body. This property key would represent the user ID
   req.body.createdBy = req.user.userId;
@@ -47,10 +50,31 @@ const createJob = async (req, res) => {
   });
 };
 
+// Update Job
 const updateJob = async (req, res) => {
-  res.send("Update Job");
+  const {
+    params: { jobID },
+    user: { userId },
+    body,
+  } = req;
+  const job = await JobCollection.findOneAndUpdate(
+    { _id: jobID, createdBy: userId },
+    body,
+    { new: true }
+  );
+
+  if (!job) {
+    throw new NotFoundError(`Job with the id, ${jobID} does not exist`);
+  }
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Job updated successfully",
+    job,
+  });
 };
 
+// Delete Job
 const deleteJob = async (req, res) => {
   const {
     user: { userId },
