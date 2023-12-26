@@ -130,6 +130,8 @@ paths:
           description: ""
           headers: {}
       deprecated: false
+      security:
+        - bearer: []
     patch:
       tags:
         - Jobs
@@ -141,6 +143,8 @@ paths:
           description: ""
           headers: {}
       deprecated: false
+      security:
+        - bearer: []
 
 components:
   schemas:
