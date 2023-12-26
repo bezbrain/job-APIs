@@ -5,6 +5,10 @@
 // * xss-clean: This library helps to sanitize the user input in the req.body, req.query and req.params and as a result, protects us from cross-side scripting attacks where the attacker tries to inject some malicious code.
 // * express-rate-limit: This helps to limit the amount of request a user can make
 
+// ADDING SWAGGER UI TO OUR APPLICATION
+// * yamljs : This is used to convert the yaml one to something the Swagger UI can understand.
+// * swagger-ui-express: This adds Swagger to our application
+
 const express = require("express");
 require("express-async-errors");
 require("dotenv").config();
@@ -15,6 +19,11 @@ const helmet = require("helmet");
 const cors = require("cors");
 const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
+
+// Swagger
+const swaggerUI = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocs = YAML.load("./swagger.yaml");
 
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandleMiddleware = require("./middleware/error-handler");
@@ -42,8 +51,12 @@ const port = process.env.PORT || 3000;
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("This is the home page");
+  res.send("<h2>Home page</h2><a href='/api-docs'>Go To Docs</a>");
 });
+
+// Serve the documentation
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
 // General route
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/jobs", authMiddleware, jobRouter);
